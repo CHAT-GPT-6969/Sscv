@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC Result 2025</title>
+
+<style>
+body {font-family: Arial; background:#f2f2f2; margin:0;}
+
+.header {
+    background:#0a4f7a;
+    color:white;
+    text-align:center;
+    padding:15px;
+    font-size:20px;
+}
+
+.container, .result {
+    max-width:500px;
+    margin:20px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+input, button {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+
+button {
+    background:#0a4f7a;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+.captcha-box {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.captcha {
+    background:#ddd;
+    padding:8px;
+    font-weight:bold;
+}
+
+.result {display:none;}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td {
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+.pass {color:green; font-weight:bold;}
+
+.print-btn {
+    background:green;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">SSC Examination Result 2025</div>
+
+<div class="container">
+    <input id="roll" placeholder="Enter Roll Number">
+    <input id="mother" placeholder="Mother Name">
+
+    <div class="captcha-box">
+        <div class="captcha" id="captcha"></div>
+        <button onclick="generateCaptcha()">↻</button>
+    </div>
+
+    <input id="captchaInput" placeholder="Enter Captcha">
+    <button onclick="getResult()">View Result</button>
+</div>
+
+<div class="result" id="resultBox">
+    <h3>SSC EXAMINATION RESULT</h3>
+    <p><b>Name:</b> <span id="name"></span></p>
+
+    <table id="marksTable"></table>
+
+    <br>
+
+    <table>
+        <tr><td><b>Percentage</b></td><td id="percent"></td></tr>
+        <tr><td><b>Total</b></td><td id="total"></td></tr>
+        <tr><td><b>Result</b></td><td class="pass">PASS</td></tr>
+    </table>
+
+    <br>
+    <button class="print-btn" onclick="window.print()">Download / Print</button>
+</div>
+
+<script>
+// Fake Database
+const students = {
+    "12345": {
+        name:"Rahul Sharma",
+        marks:[
+            ["Marathi",76],["English",91],["Math",92],
+            ["Science",92],["Social",86]
+        ]
+    },
+    "67890": {
+        name:"Amit Patil",
+        marks:[
+            ["Marathi",65],["English",70],["Math",80],
+            ["Science",75],["Social",60]
+        ]
+    }
+};
+
+// Captcha
+let cap="";
+function generateCaptcha(){
+    let c="ABC123XYZ789";
+    cap="";
+    for(let i=0;i<5;i++){
+        cap+=c[Math.floor(Math.random()*c.length)];
+    }
+    document.getElementById("captcha").innerText=cap;
+}
+generateCaptcha();
+
+// Result Logic
+function getResult(){
+    let roll=document.getElementById("roll").value;
+    let userCap=document.getElementById("captchaInput").value;
+
+    if(userCap!==cap){
+        alert("Wrong Captcha ❌");
+        return;
+    }
+
+    let data=students[roll];
+
+    if(!data){
+        alert("Result Not Found ❌");
+        return;
+    }
+
+    document.querySelector(".container").style.display="none";
+    document.getElementById("resultBox").style.display="block";
+
+    document.getElementById("name").innerText=data.name;
+
+    let table="<tr><th>Subject</th><th>Marks</th></tr>";
+    let total=0;
+
+    data.marks.forEach(sub=>{
+        table+=`<tr><td>${sub[0]}</td><td>${sub[1]}</td></tr>`;
+        total+=sub[1];
+    });
+
+    document.getElementById("marksTable").innerHTML=table;
+
+    let percent=(total/data.marks.length).toFixed(2);
+
+    document.getElementById("total").innerText=total+" / 500";
+    document.getElementById("percent").innerText=percent+"%";
+}
+</script>
+
+</body>
+</html>
